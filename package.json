@@ -1,0 +1,14 @@
+{
+  "name": "codehero-vanilla-js",
+  "version": "1.0.0",
+  "description": "Simple Vanilla JS app to search for characters in Marvel API.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "marvel-api",
+    "js"
+  ],
+  "author": "Fabrício Oliveira <fabriciololiveira@gmail.com> (https://fabloliv.github.io)",
+  "license": "MIT"
+}
