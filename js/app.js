@@ -1,5 +1,7 @@
 import { API_KEY, PRIVATE_KEY } from "./apikey.js";
 
+// Get HTML elements
+
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("name");
 const results = document.getElementById("result");
@@ -19,7 +21,11 @@ closeBtn.addEventListener("click", () => {
   modal.classList.remove("showModal");
 });
 
-// Create character list
+/**
+ * Functions
+ */
+
+// Create character card list
 
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
@@ -38,7 +44,7 @@ const getCharacterList = () => {
     .catch((e) => console.log(e));
 };
 
-// Search Character By Name
+// Search character by name
 
 const searchCharacterByName = (character) => {
   const characterName = encodeURIComponent(character);
@@ -66,7 +72,7 @@ const searchCharacterByName = (character) => {
     .catch((e) => console.log(e));
 };
 
-// Create list item
+// Create character card
 
 const createCharacterCard = (e) => {
   let card = "";
@@ -90,9 +96,9 @@ const createCharacterCard = (e) => {
   results.insertAdjacentHTML("beforeEnd", card);
 };
 
-// Create modal
+// Get Character details and call modal
 
-function getCharacterDetails(e) {
+const getCharacterDetails = (e) => {
   e.preventDefault();
   if (e.target.classList.contains("link-info")) {
     let characterId = e.target.parentElement.dataset.id;
@@ -110,9 +116,12 @@ function getCharacterDetails(e) {
       })
       .catch((e) => console.log(e));
   }
-}
+};
+
+// Insert data into HTML and make modal visible.
 
 const createCharacterModal = (e) => {
+  // destructuring
   const {
     id,
     name,
