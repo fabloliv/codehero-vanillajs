@@ -6,6 +6,7 @@ const closeBtn = document.getElementById("close-btn");
 
 searchBtn.addEventListener("click", getCharacterList);
 
+// home
 function getCharacterList() {
   const TIMESTAMP = Date.now();
   // md5(ts+privateKey+publicKey)
@@ -14,8 +15,10 @@ function getCharacterList() {
 
   fetch(URL)
     .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
+    .then((response) => {
+      console.log(response.data.results[2].name);
     })
     .catch((e) => console.log(e));
 }
+
+// Search for Character
