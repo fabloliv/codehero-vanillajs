@@ -7,54 +7,43 @@ const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modal-content");
 const closeBtn = document.getElementById("close-btn");
 
+// Event listeners
+
 searchBtn.addEventListener("click", () => {
   searchCharacterByName(searchInput.value.trim());
 });
+
+results.addEventListener("click", getCharacterDetails);
 
 closeBtn.addEventListener("click", () => {
   modal.classList.remove("showModal");
 });
 
-// Home
+// Create character list
+
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=10&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=16&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
   fetch(URL)
     .then((response) => response.json())
     .then((response) => {
-      let html = "";
-      let thumb = "";
-
-      if (response.data) {
-        response.data.results.map(
-          ({ id, name, thumbnail: { path, extension } }) => {
-            thumb = path + "." + extension;
-
-            html += `
-              <article data-id="${id}" class="item">                
-                <img src="${thumb}" alt="" class="thumbnail" />
-                <p class="character-name">${name}</p>
-                <a href="#" class="link-info" id="info">Detalhes</a>
-              </article>
-            `;
-          }
-        );
-        results.classList.remove("not-found");
-      } else {
-        html = `Personagem não encontrado`;
-        results.classList.add("not-found");
-      }
-      results.innerHTML = html;
+      response.data.results.forEach((e) => {
+        createCharacterCard(e);
+      });
     })
     .catch((e) => console.log(e));
 };
 
+// Search Character By Name
+
 const searchCharacterByName = (character) => {
   const characterName = encodeURIComponent(character);
+
+  results.innerHTML = "";
 
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
@@ -63,59 +52,107 @@ const searchCharacterByName = (character) => {
   fetch(URL)
     .then((response) => response.json())
     .then((response) => {
-      let html = "";
-      let thumb = "";
-
       if (response.data) {
-        response.data.results.map(
-          ({ id, name, thumbnail: { path, extension } }) => {
-            thumb = path + "." + extension;
-
-            html += `
-              <article data-id="${id}" class="item">                
-                <img src="${thumb}" alt="" class="thumbnail" />
-                <p class="character-name">${name}</p>
-                <a href="#" class="link-info" id="info">Detalhes</a>
-              </article>
-            `;
-          }
-        );
+        response.data.results.forEach((e) => {
+          createCharacterCard(e);
+        });
         results.classList.remove("not-found");
       } else {
-        html = `Personagem não encontrado`;
+        let html = `Personagem não encontrado`;
         results.classList.add("not-found");
+        results.innerHTML = html;
       }
-      results.innerHTML = html;
     })
     .catch((e) => console.log(e));
 };
 
-const createModal = () => {
+// Create list item
+
+const createCharacterCard = (e) => {
+  let card = "";
+
+  const {
+    id,
+    name,
+    thumbnail: { path, extension },
+  } = e;
+
+  let thumb = path + "." + extension;
+
+  card = `
+          <article data-id="${id}" class="item">                
+            <img src="${thumb}" alt="" class="thumbnail" />
+            <p class="character-name">${name}</p>
+            <a href="#" class="link-info" id="info">Detalhes</a>
+          </article>
+        `;
+
+  results.insertAdjacentHTML("beforeEnd", card);
+};
+
+// Create modal
+
+function getCharacterDetails(e) {
+  e.preventDefault();
+  if (e.target.classList.contains("link-info")) {
+    let characterId = e.target.parentElement.dataset.id;
+    console.log(characterId);
+
+    const TIMESTAMP = Date.now();
+    const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
+    const URL = `http://gateway.marvel.com/v1/public/characters/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+    fetch(URL)
+      .then((response) => response.json())
+      .then((response) => {
+        // console.log(response);
+        createCharacterModal(response.data.results);
+      })
+      .catch((e) => console.log(e));
+  }
+}
+
+const createCharacterModal = (e) => {
+  const {
+    id,
+    name,
+    description,
+    thumbnail: { path, extension },
+    series: { items: seriesList },
+    events: { items: eventsList },
+  } = e[0];
+
   let html = "";
+  let image = path + "." + extension;
+
   html = `
     <div class="character-img">
-      <img src="img/character.jpg" alt="" />
+      <img src="${image}" alt="${id}" />
     </div>
 
-    <h2 class="character-title">Tony Stark</h2>
-    <p class="character-description">
-      Genius. Billionaire. Philanthropist. Tony Stark's confidence is
-      only matched by his high-flying abilities as the hero called Iron
-      Man.
-    </p>
+    <h2 class="character-title">${name}</h2>
+    <p class="character-description">${
+      description ? description : "sem descrição"
+    }</p>
 
     <h3 class="character-series">Séries</h3>
     <ul>
-      <li>Amazing Spider-Man (1999 - 2013)</li>
-      <li>AMAZING SPIDER-MAN VOL. 10: NEW AVENGERS TPB (2005)</li>
-      <li>Black Goliath (1976)</li>
+      <li>${seriesList.length}</li>
+      ${seriesList
+        .map((serie) => {
+          return `<li>${serie.name}</li>`;
+        })
+        .join("")}     
     </ul>
 
     <h3 class="character-events">Eventos</h3>
     <ul>
-      <li>Civil War</li>
-      <li>House of M</li>
-      <li>Other - Evolve or Die</li>
+      <li> ${eventsList.length}</li>
+      ${eventsList
+        .map((event) => {
+          return `<li>${event.name}</li>`;
+        })
+        .join("")}  
     </ul>
   `;
   modalContent.innerHTML = html;
