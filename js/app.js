@@ -6,19 +6,40 @@ const closeBtn = document.getElementById("close-btn");
 
 searchBtn.addEventListener("click", getCharacterList);
 
-// home
+// Home
 function getCharacterList() {
+  let searchInput = document.getElementById("name").value.trim();
+
   const TIMESTAMP = Date.now();
   // md5(ts+privateKey+publicKey)
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=5&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=10&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   fetch(URL)
     .then((response) => response.json())
     .then((response) => {
-      console.log(response.data.results[2].name);
+      let html = "";
+      let thumb = "";
+
+      if (response.data) {
+        response.data.results.map(
+          ({ id, name, thumbnail: { path, extension } }) => {
+            thumb = path + "." + extension;
+
+            html += `
+              <article data-id="${id}" class="item">                
+                <img src="${thumb}" alt="" class="thumbnail" />
+                <p class="character-name">${name}</p>
+                <a href="#" class="link-info" id="info">Detalhes</a>
+              </article>
+            `;
+            //console.log(name + id + path + "." + extension);
+          }
+        );
+      }
+      results.innerHTML = html;
     })
     .catch((e) => console.log(e));
-}
 
-// Search for Character
+  // console.log(searchInput);
+}
