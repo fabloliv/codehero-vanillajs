@@ -36,6 +36,9 @@ function getCharacterList() {
             //console.log(name + id + path + "." + extension);
           }
         );
+      } else {
+        html = `Personagem não encontrado`;
+        results.classList.add("not-found");
       }
       results.innerHTML = html;
     })

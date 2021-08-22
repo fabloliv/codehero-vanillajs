@@ -146,6 +146,9 @@ select {
   margin: 0 auto;
   max-width: 1280px;
 }
+.not-found {
+  color: var(--display-color-01);
+}
 
 .item {
   margin: 2rem 0;
