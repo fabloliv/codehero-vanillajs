@@ -1,25 +1,27 @@
 import { API_KEY, PRIVATE_KEY } from "./apikey.js";
 
 const searchBtn = document.getElementById("search-btn");
+const searchInput = document.getElementById("name");
 const results = document.getElementById("result");
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modal-content");
 const closeBtn = document.getElementById("close-btn");
 
-searchBtn.addEventListener("click", getCharacterList);
+searchBtn.addEventListener("click", () => {
+  searchCharacterByName(searchInput.value.trim());
+});
 
 closeBtn.addEventListener("click", () => {
   modal.classList.remove("showModal");
 });
 
 // Home
-function getCharacterList() {
-  //let searchInput = document.getElementById("name").value.trim();
-
+const getCharacterList = () => {
   const TIMESTAMP = Date.now();
-  // md5(ts+privateKey+publicKey)
-  const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
+  const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
   const URL = `http://gateway.marvel.com/v1/public/characters?limit=10&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  searchInput.value = "";
 
   fetch(URL)
     .then((response) => response.json())
@@ -39,7 +41,6 @@ function getCharacterList() {
                 <a href="#" class="link-info" id="info">Detalhes</a>
               </article>
             `;
-            //console.log(name + id + path + "." + extension);
           }
         );
         results.classList.remove("not-found");
@@ -50,11 +51,46 @@ function getCharacterList() {
       results.innerHTML = html;
     })
     .catch((e) => console.log(e));
+};
 
-  // console.log(searchInput);
-}
+const searchCharacterByName = (character) => {
+  const characterName = encodeURIComponent(character);
 
-function createModal() {
+  const TIMESTAMP = Date.now();
+  const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
+  const URL = `http://gateway.marvel.com/v1/public/characters?name=${characterName}&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  fetch(URL)
+    .then((response) => response.json())
+    .then((response) => {
+      let html = "";
+      let thumb = "";
+
+      if (response.data) {
+        response.data.results.map(
+          ({ id, name, thumbnail: { path, extension } }) => {
+            thumb = path + "." + extension;
+
+            html += `
+              <article data-id="${id}" class="item">                
+                <img src="${thumb}" alt="" class="thumbnail" />
+                <p class="character-name">${name}</p>
+                <a href="#" class="link-info" id="info">Detalhes</a>
+              </article>
+            `;
+          }
+        );
+        results.classList.remove("not-found");
+      } else {
+        html = `Personagem não encontrado`;
+        results.classList.add("not-found");
+      }
+      results.innerHTML = html;
+    })
+    .catch((e) => console.log(e));
+};
+
+const createModal = () => {
   let html = "";
   html = `
     <div class="character-img">
@@ -84,5 +120,6 @@ function createModal() {
   `;
   modalContent.innerHTML = html;
   modal.classList.add("showModal");
-}
-createModal();
+};
+
+getCharacterList();
