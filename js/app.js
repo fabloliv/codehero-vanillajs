@@ -32,7 +32,7 @@ closeBtn.addEventListener("click", () => {
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=28&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `https://gateway.marvel.com/v1/public/characters?limit=28&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
@@ -55,7 +55,7 @@ const searchCharacterByName = (character) => {
 
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-  const URL = `http://gateway.marvel.com/v1/public/characters?name=${characterName}&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `https://gateway.marvel.com/v1/public/characters?name=${characterName}&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   fetch(URL)
     .then((response) => response.json())
@@ -118,7 +118,7 @@ function getCharacterDetails(e) {
 
     const TIMESTAMP = Date.now();
     const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-    const URL = `http://gateway.marvel.com/v1/public/characters/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+    const URL = `https://gateway.marvel.com/v1/public/characters/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
     fetch(URL)
       .then((response) => response.json())
