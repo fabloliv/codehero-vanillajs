@@ -12,7 +12,9 @@ const closeBtn = document.getElementById("close-btn");
 // Event listeners
 
 searchBtn.addEventListener("click", () => {
-  searchCharacterByName(searchInput.value.trim());
+  searchInput.value == ""
+    ? alert("Digite o nome")
+    : searchCharacterByName(searchInput.value.trim());
 });
 
 results.addEventListener("click", getCharacterDetails);
@@ -30,7 +32,7 @@ closeBtn.addEventListener("click", () => {
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=24&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=28&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
@@ -58,7 +60,11 @@ const searchCharacterByName = (character) => {
   fetch(URL)
     .then((response) => response.json())
     .then((response) => {
-      if (response.data) {
+      response.data.count == 0
+        ? console.log("retornou 0")
+        : console.log(response.data.count);
+
+      if (response.data.count) {
         response.data.results.forEach((e) => {
           createCharacterCard(e);
         });
@@ -106,11 +112,9 @@ const createCharacterCard = (e) => {
 
 function getCharacterDetails(e) {
   e.preventDefault();
-  console.log(e.target.parentElement);
 
   if (e.target.parentElement.classList.contains("show-details")) {
     let characterId = e.target.parentElement.dataset.id;
-    console.log(characterId);
 
     const TIMESTAMP = Date.now();
     const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
@@ -138,40 +142,53 @@ const createCharacterModal = (e) => {
     events: { items: eventsList },
   } = e[0];
 
-  let html = "";
+  let body = "";
   let image = path + "." + extension;
+  let seriesSection = "";
+  let eventsSection = "";
 
-  html = `
+  if (seriesList.length > 0) {
+    seriesSection = `
+      <h3 class="character-series">Algumas séries em que participou</h3>
+      <ul>
+        ${seriesList
+          .slice(0, 3)
+          .map((serie) => {
+            return `<li>${serie.name}</li>`;
+          })
+          .join("")}     
+      </ul>
+    `;
+  }
+
+  if (eventsList.length > 0) {
+    eventsSection = `
+      <h3 class="character-events">Alguns eventos em que participou</h3>
+      <ul>
+        ${eventsList
+          .slice(0, 3)
+          .map((event) => {
+            return `<li>${event.name}</li>`;
+          })
+          .join("")}  
+      </ul>
+    `;
+  }
+
+  body = `
     <div class="character-img">
       <img src="${image}" alt="${id}" />
     </div>
 
     <h2 class="character-title">${name}</h2>
     <p class="character-description">${
-      description ? description : "sem descrição"
+      description ? description : "Sem descrição disponível"
     }</p>
-
-    <h3 class="character-series">Séries</h3>
-    <ul>
-      <li>${seriesList.length}</li>
-      ${seriesList
-        .map((serie) => {
-          return `<li>${serie.name}</li>`;
-        })
-        .join("")}     
-    </ul>
-
-    <h3 class="character-events">Eventos</h3>
-    <ul>
-      <li> ${eventsList.length}</li>
-      ${eventsList
-        .map((event) => {
-          return `<li>${event.name}</li>`;
-        })
-        .join("")}  
-    </ul>
+    ${seriesSection}
+    ${eventsSection}
   `;
-  modalContent.innerHTML = html;
+
+  modalContent.innerHTML = body;
   modal.classList.add("showModal");
 };
 

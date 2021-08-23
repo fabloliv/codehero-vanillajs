@@ -169,9 +169,7 @@ select {
   overflow: hidden;
 }
 
-.character-thumbnail {
-  /* background-color: #ccc; */
-}
+/* .character-thumbnail {} */
 
 .character-name {
   font-size: 0.75rem;
@@ -284,7 +282,7 @@ select {
 
 .character-series,
 .character-events {
-  font-size: 1.125rem;
+  font-size: 1rem;
   padding: 1rem 0;
 }
 
@@ -302,12 +300,11 @@ select {
   margin: 0 0 0.4375rem 0;
 }
 
-.character-img {
-  /* padding: 0 0 10px 0; */
-}
+/* .character-img {} */
+
 .character-img img {
-  width: 130px;
-  height: 130px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   margin: 0 auto;
   object-fit: cover;
