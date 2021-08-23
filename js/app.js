@@ -30,7 +30,7 @@ closeBtn.addEventListener("click", () => {
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=16&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=24&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
@@ -38,7 +38,7 @@ const getCharacterList = () => {
     .then((response) => response.json())
     .then((response) => {
       response.data.results.forEach((e) => {
-        createCharacterCard(e);
+        createCharacterCard(e); // create card
       });
     })
     .catch((e) => console.log(e));
@@ -64,7 +64,7 @@ const searchCharacterByName = (character) => {
         });
         results.classList.remove("not-found");
       } else {
-        let html = `Personagem não encontrado`;
+        let html = `<strong>Personagem não encontrado</strong>`;
         results.classList.add("not-found");
         results.innerHTML = html;
       }
@@ -86,10 +86,16 @@ const createCharacterCard = (e) => {
   let thumb = path + "." + extension;
 
   card = `
-          <article data-id="${id}" class="item">                
-            <img src="${thumb}" alt="" class="thumbnail" />
-            <p class="character-name">${name}</p>
-            <a href="#" class="link-info" id="info">Detalhes</a>
+          <article id="${id}" class="card">
+            <figure class="character-thumbnail">
+              <a href="#" data-id="${id}" class="show-details" title="Veja detalhes">
+                <img
+                  src="${thumb}"
+                  alt="${name}"
+                  height="150"
+                />
+              </a>
+              <figcaption class="character-name">${name}</figcaption>
           </article>
         `;
 
@@ -98,25 +104,26 @@ const createCharacterCard = (e) => {
 
 // Get Character details and call modal
 
-const getCharacterDetails = (e) => {
+function getCharacterDetails(e) {
   e.preventDefault();
-  if (e.target.classList.contains("link-info")) {
+  console.log(e.target.parentElement);
+
+  if (e.target.parentElement.classList.contains("show-details")) {
     let characterId = e.target.parentElement.dataset.id;
     console.log(characterId);
 
     const TIMESTAMP = Date.now();
-    const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
+    const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
     const URL = `http://gateway.marvel.com/v1/public/characters/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
     fetch(URL)
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
-        createCharacterModal(response.data.results);
+        createCharacterModal(response.data.results); // send data to modal
       })
       .catch((e) => console.log(e));
   }
-};
+}
 
 // Insert data into HTML and make modal visible.
 
