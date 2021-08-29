@@ -6,6 +6,10 @@ const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("name");
 const results = document.getElementById("result");
 const modal = document.getElementById("modal");
+const overlay = document.createElement("div");
+overlay.className = "overlay";
+const body = document.querySelector("body");
+
 const modalContent = document.getElementById("modal-content");
 const closeBtn = document.getElementById("close-btn");
 
@@ -19,9 +23,19 @@ searchBtn.addEventListener("click", () => {
 
 results.addEventListener("click", getCharacterDetails);
 
-closeBtn.addEventListener("click", () => {
-  modal.classList.remove("showModal");
-});
+const toggleModal = function () {
+  if (modal.classList.contains("hidden")) {
+    modal.classList.remove("hidden");
+    body.appendChild(overlay);
+  } else {
+    modal.classList.add("hidden");
+    document.body.removeChild(overlay);
+  }
+};
+
+closeBtn.addEventListener("click", toggleModal);
+
+overlay.addEventListener("click", toggleModal);
 
 /**
  * Functions
@@ -31,8 +45,8 @@ closeBtn.addEventListener("click", () => {
 
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
-  const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY); // md5(ts+privateKey+publicKey)
-  const URL = `https://gateway.marvel.com/v1/public/characters?limit=28&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
+  const URL = `https://gateway.marvel.com/v1/public/characters?limit=40&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
@@ -40,7 +54,8 @@ const getCharacterList = () => {
     .then((response) => response.json())
     .then((response) => {
       response.data.results.forEach((e) => {
-        createCharacterCard(e); // create card
+        // create card
+        createCharacterCard(e);
       });
     })
     .catch((e) => console.log(e));
@@ -60,10 +75,6 @@ const searchCharacterByName = (character) => {
   fetch(URL)
     .then((response) => response.json())
     .then((response) => {
-      response.data.count == 0
-        ? console.log("retornou 0")
-        : console.log(response.data.count);
-
       if (response.data.count) {
         response.data.results.forEach((e) => {
           createCharacterCard(e);
@@ -123,7 +134,8 @@ function getCharacterDetails(e) {
     fetch(URL)
       .then((response) => response.json())
       .then((response) => {
-        createCharacterModal(response.data.results); // send data to modal
+        // send data to modal
+        createCharacterModal(response.data.results);
       })
       .catch((e) => console.log(e));
   }
@@ -132,7 +144,7 @@ function getCharacterDetails(e) {
 // Insert data into HTML and make modal visible.
 
 const createCharacterModal = (e) => {
-  // destructuring
+  // destructuring data
   const {
     id,
     name,
@@ -189,7 +201,7 @@ const createCharacterModal = (e) => {
   `;
 
   modalContent.innerHTML = body;
-  modal.classList.add("showModal");
+  toggleModal();
 };
 
 getCharacterList();

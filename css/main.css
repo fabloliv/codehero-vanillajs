@@ -169,8 +169,6 @@ select {
   overflow: hidden;
 }
 
-/* .character-thumbnail {} */
-
 .character-name {
   font-size: 0.75rem;
   display: block;
@@ -202,6 +200,7 @@ select {
 
 .show-details img {
   object-fit: cover;
+  min-height: 80px;
 }
 
 .show-details,
@@ -216,15 +215,50 @@ select {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bkg-color-darker);
+  background-color: var(--bkg-color-dark);
   color: var(--bkg-color-light);
   text-align: center;
-  width: 92%;
-  height: 92%;
+  width: 90%;
+  height: 90%;
   overflow-y: scroll;
-  display: none;
   box-shadow: rgba(240, 46, 170, 0.95) 5px 5px;
+  z-index: 100;
+
+  padding: 2rem;
+  max-width: 720px;
+  min-width: 328px;
+
+  animation: fadein 0.3s;
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  z-index: 10;
+
+  animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+/* Modal Scrollbar */
 
 .details-modal::-webkit-scrollbar {
   width: 10px;
@@ -232,14 +266,6 @@ select {
 .details-modal::-webkit-scrollbar-thumb {
   background-color: var(--display-color-02);
   border-radius: 2rem;
-}
-
-.showModal {
-  display: block;
-}
-.modal-wrapper {
-  max-width: 1280px;
-  padding: 2rem;
 }
 
 .close-btn {
@@ -273,8 +299,8 @@ select {
 }
 
 .character-title {
-  font-size: 1.25rem;
-  padding: 1rem 0 1.5rem;
+  font-size: 1.375rem;
+  padding: 1rem 0 1rem;
   line-height: 1.1em;
   text-transform: uppercase;
   font-style: italic;
@@ -289,6 +315,8 @@ select {
 .character-description {
   font-size: 0.875rem;
   line-height: 1.4285em; /* 20px / 14px */
+  margin: 0 auto;
+  padding: 0 0 1rem 0;
 }
 
 .character-info ul li {

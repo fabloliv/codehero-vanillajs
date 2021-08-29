@@ -7,7 +7,8 @@
   },
   "keywords": [
     "marvel-api",
-    "js"
+    "marvel-characters",
+    "vanilla-js"
   ],
   "author": "Fabrício Oliveira <fabriciololiveira@gmail.com> (https://fabloliv.github.io)",
   "license": "MIT"
