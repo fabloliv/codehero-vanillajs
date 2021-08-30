@@ -38,7 +38,10 @@ const toggleModal = function () {
   }
 };
 
-closeBtn.addEventListener("click", toggleModal);
+closeBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  toggleModal();
+});
 
 overlay.className = "overlay";
 overlay.addEventListener("click", toggleModal);
@@ -216,6 +219,7 @@ const createCharacterModal = (e) => {
     }</p>
     ${seriesSection}
     ${eventsSection}
+    <footer><a href="http://marvel.com">Data provided by Marvel. © 2021 MARVEL</a></footer>
   `;
 
   modalContent.innerHTML = body;
