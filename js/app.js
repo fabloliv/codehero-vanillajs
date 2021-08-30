@@ -1,13 +1,18 @@
 import { API_KEY, PRIVATE_KEY } from "./apikey.js";
 
+// Initialize variables
+
+const baseURL = "https://gateway.marvel.com";
+const endpoint = "/v1/public/characters?";
+
+const overlay = document.createElement("div");
+
 // Get HTML elements
 
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("name");
 const results = document.getElementById("result");
 const modal = document.getElementById("modal");
-const overlay = document.createElement("div");
-overlay.className = "overlay";
 const body = document.querySelector("body");
 
 const modalContent = document.getElementById("modal-content");
@@ -35,6 +40,7 @@ const toggleModal = function () {
 
 closeBtn.addEventListener("click", toggleModal);
 
+overlay.className = "overlay";
 overlay.addEventListener("click", toggleModal);
 
 /**
@@ -46,7 +52,14 @@ overlay.addEventListener("click", toggleModal);
 const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-  const URL = `https://gateway.marvel.com/v1/public/characters?limit=40&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  let parameters = `limit=25&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  const URL = baseURL + endpoint + parameters;
+
+  // const URL = `${
+  //   baseURL + endpoint
+  // }limit=25&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   searchInput.value = "";
 
@@ -107,8 +120,9 @@ const createCharacterCard = (e) => {
             <figure class="character-thumbnail">
               <a href="#" data-id="${id}" class="show-details" title="Veja detalhes">
                 <img
+                  loading="lazy"
                   src="${thumb}"
-                  alt="${name}"
+                  alt=""
                   height="150"
                 />
               </a>
