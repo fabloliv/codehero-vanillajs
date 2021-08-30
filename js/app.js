@@ -3,7 +3,7 @@ import { API_KEY, PRIVATE_KEY } from "./apikey.js";
 // Initialize variables
 
 const baseURL = "https://gateway.marvel.com";
-const endpoint = "/v1/public/characters?";
+const endpoint = "/v1/public/characters";
 
 const overlay = document.createElement("div");
 
@@ -53,13 +53,9 @@ const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
 
-  let parameters = `limit=25&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  let parameters = `?limit=20&offset=40&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
-  const URL = baseURL + endpoint + parameters;
-
-  // const URL = `${
-  //   baseURL + endpoint
-  // }limit=25&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  let URL = baseURL + endpoint + parameters;
 
   searchInput.value = "";
 
@@ -74,16 +70,21 @@ const getCharacterList = () => {
     .catch((e) => console.log(e));
 };
 
+getCharacterList();
+
 // Search character by name
 
 const searchCharacterByName = (character) => {
   const characterName = encodeURIComponent(character);
 
-  results.innerHTML = "";
-
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-  const URL = `https://gateway.marvel.com/v1/public/characters?name=${characterName}&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  let parameters = `?name=${characterName}&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+  let URL = baseURL + endpoint + parameters;
+
+  results.innerHTML = "";
 
   fetch(URL)
     .then((response) => response.json())
@@ -143,7 +144,10 @@ function getCharacterDetails(e) {
 
     const TIMESTAMP = Date.now();
     const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
-    const URL = `https://gateway.marvel.com/v1/public/characters/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+    let parameters = `/${characterId}?&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+
+    let URL = baseURL + endpoint + parameters;
 
     fetch(URL)
       .then((response) => response.json())
@@ -203,7 +207,7 @@ const createCharacterModal = (e) => {
 
   body = `
     <div class="character-img">
-      <img src="${image}" alt="${id}" />
+      <img src="${image}" loading="lazy" height="150" alt="${name}" />
     </div>
 
     <h2 class="character-title">${name}</h2>
@@ -217,5 +221,3 @@ const createCharacterModal = (e) => {
   modalContent.innerHTML = body;
   toggleModal();
 };
-
-getCharacterList();
