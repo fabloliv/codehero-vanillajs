@@ -1,6 +1,6 @@
 {
   "name": "codehero-vanilla-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple Vanilla JS app to search for characters in Marvel API.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
