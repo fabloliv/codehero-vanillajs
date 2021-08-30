@@ -56,7 +56,7 @@ const getCharacterList = () => {
   const TIMESTAMP = Date.now();
   const HASH = md5(TIMESTAMP + PRIVATE_KEY + API_KEY);
 
-  let parameters = `?limit=20&offset=40&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
+  let parameters = `?limit=25&offset=50&ts=${TIMESTAMP}&apikey=${API_KEY}&hash=${HASH}`;
 
   let URL = baseURL + endpoint + parameters;
 
@@ -167,7 +167,6 @@ function getCharacterDetails(e) {
 const createCharacterModal = (e) => {
   // destructuring data
   const {
-    id,
     name,
     description,
     thumbnail: { path, extension },
