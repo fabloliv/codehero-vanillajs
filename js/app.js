@@ -188,7 +188,7 @@ const createCharacterModal = (e) => {
           .map((serie) => {
             return `<li>${serie.name}</li>`;
           })
-          .join("")}     
+          .join("")}
       </ul>
     `;
   }
@@ -202,7 +202,7 @@ const createCharacterModal = (e) => {
           .map((event) => {
             return `<li>${event.name}</li>`;
           })
-          .join("")}  
+          .join("")}
       </ul>
     `;
   }

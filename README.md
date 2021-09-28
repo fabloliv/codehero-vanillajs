@@ -48,8 +48,10 @@ https://codehero-vanillajs.netlify.app/
 
 - [x] Testar formas de Lazy Loading;
 - [x] Melhorar o README;
-- [ ] Experimentar `commitizen`;
+- [x] Experimentar `commitizen`;
 - [ ] Mudar a forma de busca para "nome começa com";
+- [ ] Mudar a fonte para títulos;
+- [ ] Melhor validação do campo de busca;
 - [ ] Paginação;
 - [ ] Refinar responsividade;
 - [ ] Testes!
